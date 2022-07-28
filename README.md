@@ -1,1 +1,1 @@
-# K&R C Programming Language Exercise Solutions
+# K&R c programming language exercise solutions
