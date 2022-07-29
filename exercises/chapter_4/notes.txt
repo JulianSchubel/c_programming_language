@@ -1,5 +1,0 @@
-If a name that has not previously been declared is followed by a left parenthesis, it is declared by context to be a function name, and is assumend to return an int. Nothing is assumed about its arguments.
-
-If a function declaratoin does not include parameters, nothing is assumed about its parameters. This is different to explicitly stating "void", i.e. no arguments. 
-
-Always indicate no parameters via "void".
