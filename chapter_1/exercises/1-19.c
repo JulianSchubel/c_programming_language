@@ -10,11 +10,7 @@ void reverse(char s[]);
 int main(int argc, char * * argv)
 {
     int len;            /* Current line length  */
-    int max;            /* Maximum length seen so far  */
     char line[MAXLINE]; /* Current input line  */
-    char longest[MAXLINE]; /* Longest line saved here */
-
-    max = 0;
 
     while((len = getln(line, MAXLINE)) > 0) {
         reverse(line);
@@ -62,14 +58,4 @@ int getln(char s[], int lim)
     }
     s[i] = '\0';
     return i;
-}
-
-/* copy: copy 'from' into 'to': assume 'to' is big enough */
-void copy(char to[], char from[]) 
-{
-    int i;
-    i = 0;
-    while((to[i] = from[i]) != '\0') {
-        ++i;
-    }
 }
