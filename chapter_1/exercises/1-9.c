@@ -7,9 +7,9 @@ int main()
 
 	while ((c = getchar()) != EOF)
 	{
-		if ((c == ' ') && (last == ' '))			// if c and last are both blanks (i.e two spaces in input)
+		if ((c == ' ') && (last == ' '))    // if c and last are both blanks (i.e two spaces in input)
 		{
-			while (c == last)						// get the next character until c != last (i.e not two or more consecutive spaces)
+			while (c == last)               // get the next character until c != last (i.e not consecutive spaces)
 			{
 				c = getchar(); 
 			}
