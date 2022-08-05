@@ -1,23 +1,23 @@
 #include <stdio.h>
-/* symbolic constants*/
 
-#define LOWER 0
-#define UPPER 300
-#define STEP 20
+// Centigrade = (5/9)(Fahrenheit-32)
+/* Print Celsius-Fahrenheit table */
 
-/* Print Fahrenheit - Celsius table */
-void fahr_cel()
+int main()
 {
-	int fahrenheit;
+	float fahrenheit, celcius;
+	int lower, upper, step;
 
-	for (fahrenheit = LOWER; fahrenheit <= UPPER; fahrenheit += STEP)
-	{
-		printf("%3d\t%6.1f\n", fahrenheit, (5.0/9.0)*(fahrenheit - 32));
+	lower = 0;			/* lower limit of temperature table */
+	upper = 20;		/* upper limit */
+	step = 1;			/* step size */
+
+	celcius = lower;
+	printf("Celcius - Fahrenheit\n");
+	while (celcius <= upper) {
+		//celcius = 5.0 * (fahrenheit - 32.0) / 9.0;
+		fahrenheit = (9.0 * (celcius) / 5.0) + 32;
+		printf("%3.0f\t%.2f\n", celcius, fahrenheit);
+		celcius += step;
 	}
-}
-
-int main(int argc, char * * argv)
-{
-	fahr_cel();	
-	return 0;
 }

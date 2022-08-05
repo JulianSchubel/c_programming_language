@@ -1,12 +1,22 @@
 #include <stdio.h>
-/* variant of temperature converter with for loop */
+
+// Centigrade = (5/9)(Fahrenheit-32)
+/* Print Fahrenheit-Celsius table */
 
 int main()
 {
-	int fahr;
+	float fahrenheit, celcius;
+	int lower, upper, step;
 
-	for (fahr = 0; fahr <= 300; fahr = fahr + 20)
-	{
-		printf("%3d\t%6.1f\n", fahr, (5.0/9.0)*(fahr - 32));
+	lower = 0;			/* lower limit of temperature table */
+	upper = 300;		/* upper limit */
+	step = 20;			/* step size */
+
+	fahrenheit = lower;
+	printf("Fahrenheit - Celsius\n");
+	while (fahrenheit <= upper) {
+		celcius = 5.0 * (fahrenheit - 32.0) / 9.0;
+		printf("%3.0f\t%.2f\n", fahrenheit, celcius);
+		fahrenheit += step;
 	}
 }
