@@ -54,12 +54,13 @@ int fold(char s[], int column_width)
                 ++marker;
             }
 
+            /* Output fold substring  */
             for(int j = marker; j <= last_word_end_index; ++j) {
                 putchar(s[j]);
             }
             putchar('\n');
 
-            /* Update marker to depending on the nearest known word boundary; Determiend by state */
+            /* Update marker depending on the nearest known word boundary; Determiend by state */
             /* Nearest known word boundary is the beginning of the current word. Current word excluded in last fold */
             if(state == IN) {
                 marker = last_word_start_index;
