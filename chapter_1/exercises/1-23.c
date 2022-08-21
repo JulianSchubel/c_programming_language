@@ -31,12 +31,12 @@ int main(int argc, char * * argv)
             putchar(c);
         }
         else if(c == '/' && !in_string) {
-            if((c = fgetc(fp)) == '*' && c != EOF) {
+            if((c = fgetc(fp)) == '*') {
                 while(true) {
                    c = fgetc(fp);
-                   if(c == '*' && c != EOF) {
+                   if(c == '*') {
                         c = fgetc(fp);
-                        if(c == '/' && c != EOF) {
+                        if(c == '/') {
                             break;
                         }
                         else {
