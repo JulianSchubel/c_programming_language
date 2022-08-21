@@ -4,8 +4,6 @@
     C comments do not nest.
 */
 
-/* Assuming the program is small, seeing as pointers and file handling have not been covered at this point */
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
