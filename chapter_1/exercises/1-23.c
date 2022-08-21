@@ -49,7 +49,12 @@ int main(int argc, char * * argv)
                 while((c=fgetc(fp)) != '\n' && c != EOF) {
                     ;
                 }
-                putchar(c);
+                if(c == EOF) {
+                    break;
+                }
+                else {
+                    putchar(c);
+                }
             }
         }
         else {
