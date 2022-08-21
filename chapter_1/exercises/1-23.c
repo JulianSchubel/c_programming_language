@@ -61,5 +61,6 @@ int main(int argc, char * * argv)
             putchar(c);
         }
     }
+    fclose(fp);
     return 0;
 }
