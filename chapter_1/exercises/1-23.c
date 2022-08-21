@@ -4,6 +4,8 @@
     C comments do not nest.
 */
 
+/* Replace fgetc() with getchar() for non file pointer version */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
