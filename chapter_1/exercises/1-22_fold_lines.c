@@ -60,7 +60,7 @@ int fold(char s[], int column_width)
             }
             putchar('\n');
 
-            /* Update marker depending on the nearest known word boundary; Determiend by state */
+            /* Update marker depending on the nearest known word boundary; Determined by state */
             /* Nearest known word boundary is the beginning of the current word. Current word excluded in last fold */
             if(state == IN) {
                 marker = last_word_start_index;

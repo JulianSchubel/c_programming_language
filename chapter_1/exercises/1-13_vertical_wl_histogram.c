@@ -29,13 +29,14 @@ int main()
 		{
 			++num_chars;
 		}
-		else if (state == IN && c == ' ' || c == '\n' || c == '\t')
+		else if (state == IN && (c == ' ' || c == '\n' || c == '\t'))
 		{
 			state = OUT;
 			++word_length_count[num_chars - 1];
 			num_chars = 0;
 		}
 	}
+    ++word_length_count[num_chars - 1];
 
 	largest_count = 0;
 	for (i = 0; i < MAX_WORD_LENGTH; ++i)

@@ -6,6 +6,7 @@
 #define STEP 20
 
 /* Print Fahrenheit - Celsius table reverse order. 300 -> 0*/
+
 void fahr_cel_r()
 {
 	int fahrenheit;

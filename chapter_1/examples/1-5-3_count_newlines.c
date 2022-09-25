@@ -3,15 +3,15 @@
 
 int main()
 {
-	int c, newlines;
+	int c, nl;
 
-	newlines = 0;
+	nl = 0;
 	while ((c = getchar()) != EOF)
 	{
 		if (c == '\n')
 		{
-			++newlines; 
+			++nl; 
 		}
 	}
-	printf("%s%d\n", "Number of new lines: ", newlines);
+	printf("%d\n", nl);
 }

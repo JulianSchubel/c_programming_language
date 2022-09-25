@@ -17,7 +17,7 @@
 int main(int argc, char * * argv)
 {
     FILE * fp;
-    char fn[] = "./1-23.c";
+    char fn[] = "./1-23_rm_comments.c";
     fp = fopen(fn, "r");
     int c;
     int in_string = 0;

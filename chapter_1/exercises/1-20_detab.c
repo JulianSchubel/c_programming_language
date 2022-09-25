@@ -1,7 +1,12 @@
 /* Write a program detab that replaces tabs in the input with the proper number of blanks to space to the next tab stop. Assume a fixed set of tab stops, say every n columns. */
 
 #include <stdio.h>
-#define TAB_STOP 8
+
+#define TAB_STOP 4
+
+char * detab(char * s, int lim, int tab_width);
+int getln(char s[], int lim);
+
 int main(int argc, char * * argv)
 {
     int position = 0;
@@ -24,5 +29,6 @@ int main(int argc, char * * argv)
             putchar(c);
         }
     }
+    
     return 0;
 }

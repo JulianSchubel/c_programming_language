@@ -11,6 +11,12 @@ int main(int argc, char * * argv)
 	//Array indices will serve as offset "labels" for ascii characters with value 32 - 126
 	//Contiguous array len = m - n + 1, m = upper, n = lower
 	int array[ARRAY_LEN];
+
+    /* 0 initialize the array */
+    for(int i = 0; i < ARRAY_LEN; ++i) {
+        array[i] = 0;
+    }
+
 	int c;
 	while((c = getchar()) != EOF && c != '\n') {
 		if(c >= ASCII_RANGE_LOWER && c <= ASCII_RANGE_UPPER)
@@ -19,10 +25,10 @@ int main(int argc, char * * argv)
 		}	
 	}
 	for(int i = 0; i < ARRAY_LEN; ++i) {
-		/*
+        /*
 		if(array[i] != 0)
 			printf("%c: %d\n", i+ASCII_RANGE_LOWER, array[i]);
-   		*/
+        */
 		if(array[i] != 0)
 		{
 			printf("%c: ", i+ASCII_RANGE_LOWER);
