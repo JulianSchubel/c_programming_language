@@ -1,4 +1,4 @@
-#include "squeeze.h"
+#include <stdio.h>
 
 void squeeze(char * s, int c)
 {
@@ -12,4 +12,12 @@ void squeeze(char * s, int c)
 		}
 	}
 	s[j] = '\0';
+}
+
+int main(int argc, char * argv[])
+{
+    char * string = argv[1];
+    squeeze(string, *argv[2]);
+    printf("%s\n",string);
+    return 0;
 }
