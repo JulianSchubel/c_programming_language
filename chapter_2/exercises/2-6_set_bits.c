@@ -23,4 +23,3 @@ unsigned int set_bits(unsigned int x, int p, int n, unsigned int y)
         x = x | y;
         return x;
 }
-
