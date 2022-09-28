@@ -1,8 +1,6 @@
-#include "expand.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <ctype.h>
 
 char * expand(char * s1, char * s2)
 {
