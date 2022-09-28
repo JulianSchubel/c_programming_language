@@ -1,0 +1,6 @@
+enum are constants
+
+a constant expression is an expression that consists only of constants
+external and static variables are initialized to zero by default
+non automatic variables are initialized once only (conceptually before the program starts executing).
+automatic variables without an explicit initializer have undefined values.
