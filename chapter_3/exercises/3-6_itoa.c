@@ -1,6 +1,5 @@
 /* Write a versoin of itoa that accepts three arguments instead of two. The third argument is a minimum filed width; the converted nummber must be padded with blanks on the left if necessary to make it wide enough */
 
-#include "itoa.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
