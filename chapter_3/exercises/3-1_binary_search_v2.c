@@ -60,8 +60,6 @@ int binary_search_v2(int x, int a[], int n)
 
 int main(int argc, char * * argv)
 {
-    clock_t start1, start2, end1, end2;
-    double execution_time;
     const int SIZE = 15;
     int a[] = {1,2,5,16,24,63,78, 92, 93,94, 100, 116, 255, 256,999};
 
