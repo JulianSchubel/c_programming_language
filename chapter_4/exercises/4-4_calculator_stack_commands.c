@@ -132,7 +132,7 @@ int main(int argc, char * * argv)
                 }
                 break;
             case DUP:
-                (sp) ? push(val[sp-1]) : push("\t%s\n", "error: stack empty\0");
+                (sp) ? push(val[sp-1]) : printf("\t%s\n", "error: stack empty\0");
                 break;
             case CLR:
                 for(int i = 0; i < MAXVAL; ++i) {
