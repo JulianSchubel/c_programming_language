@@ -24,7 +24,6 @@ char buf[BUFSIZE];      /* buffer for ungetch() */
 int bufp = 0;           /* next free position in buf */
 
 /* Flags */
-int fractional_flag = 0;
 int sign_flag = 0;
 
 /* reverse Polish calculator */
@@ -66,11 +65,8 @@ int main(int argc, char * * argv)
                     '%' requires integer operands
                 */
                 op2 = pop();
-                if(op2 != 0.0 && !fractional_flag) {
+                if(op2 != 0.0) {
                     push((int)pop() % (int)op2);
-                }
-                else if (fractional_flag) {
-                    printf("error: modulus requires integer operands\n");
                 }
                 else {
                     printf("error: zero divisor\n");
@@ -83,7 +79,6 @@ int main(int argc, char * * argv)
                 printf("error: unknown command %s\n", s);
                 break;
         }
-        fractional_flag = 0;
         sign_flag = 0;
     }
     return 0;
@@ -109,7 +104,6 @@ double pop(void)
         return 0.0;
     }
 }
-
 
 /* getop: get next operator or numeric operand */
 int getop(char s[])
@@ -139,7 +133,6 @@ int getop(char s[])
         while(isdigit(s[++i] = c = getch()))
             ;
     if(c == '.') {      /* collect fractional part */
-        fractional_flag = 1;
         while(isdigit(s[++i] = c = getch()))
             ;
     }
