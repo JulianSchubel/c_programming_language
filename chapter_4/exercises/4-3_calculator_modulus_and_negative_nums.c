@@ -18,6 +18,8 @@ double val[MAXVAL]; /* value stack */
 
 #define BUFSIZE     100 
 
+int getch(void);
+void ungetch(int);
 char buf[BUFSIZE];      /* buffer for ungetch() */
 int bufp = 0;           /* next free position in buf */
 
@@ -108,8 +110,6 @@ double pop(void)
     }
 }
 
-int getch(void);
-void ungetch(int);
 
 /* getop: get next operator or numeric operand */
 int getop(char s[])
