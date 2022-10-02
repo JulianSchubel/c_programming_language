@@ -56,17 +56,6 @@ symbol_t lookup_table[] = {
 
 #define LOOKUP_TABLE_SIZE   (sizeof(lookup_table) / sizeof(symbol_t))   /* Number of keys in the lookup table */
 
-/* lookup: iterate over the lookup table entries and return the integer value associated with a matching string */
-int lookup(char * key) 
-{
-    for(int i = 0; i < LOOKUP_TABLE_SIZE; ++i) { 
-        if(strcmp(lookup_table[i].key, key) == 0) {
-            return lookup_table[i].value;
-        }
-    }
-    return INVALID_KEY;
-}
-
 /* reverse Polish calculator */
 int main(int argc, char * * argv)
 {
@@ -245,4 +234,15 @@ void ungetch(int c)     /* push character back on input */
         printf("ungetch: too many characters\n");
     else 
         buf[bufp++] = c;
+}
+
+/* lookup: iterate over the lookup table entries and return the integer value associated with a matching string */
+int lookup(char * key) 
+{
+    for(int i = 0; i < LOOKUP_TABLE_SIZE; ++i) { 
+        if(strcmp(lookup_table[i].key, key) == 0) {
+            return lookup_table[i].value;
+        }
+    }
+    return INVALID_KEY;
 }
