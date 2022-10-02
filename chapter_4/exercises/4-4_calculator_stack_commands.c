@@ -24,7 +24,6 @@ int lookup(char * key);
 int sp = 0;         /* next free stack position */
 double val[MAXVAL]; /* value stack */
 
-
 char buf[BUFSIZE];      /* buffer for ungetch() */
 int bufp = 0;           /* next free position in buf */
 
@@ -149,7 +148,6 @@ int main(int argc, char * * argv)
     }
     return 0;
 }
-
 
 /* push: push f onto value pack */
 void push(double f)
