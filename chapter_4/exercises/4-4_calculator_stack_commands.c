@@ -8,9 +8,9 @@
 /* ASCII charset bounds */
 #define ASCII_LC_LB 97  /* ASCII lower case lower bound */
 #define ASCII_LC_UB 122  /* ASCII lower case upper bound */
+
 #define MAXCOMMAND  10  /* max length for a command */
 #define MAXOP       100 /* max size of operand or operator */
-
 #define MAXVAL      100 /* maximum depth of val stack */
 #define BUFSIZE     100 /* shared buffer size */
 
