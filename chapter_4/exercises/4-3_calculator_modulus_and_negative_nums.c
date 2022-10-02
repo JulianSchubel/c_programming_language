@@ -1,3 +1,5 @@
+/* Add the modulus (%) operator and provisions for negative numbers */
+
 #include <stdio.h>
 #include <stdlib.h> /* for atof() */
 #include <ctype.h>
@@ -9,6 +11,20 @@ int getop(char []);
 void push(double);
 double pop(void);
 
+#define MAXVAL  100 /* maximum depth of val stack */
+
+int sp = 0;         /* next free stack position */
+double val[MAXVAL]; /* value stack */
+
+#define BUFSIZE     100 
+
+char buf[BUFSIZE];      /* buffer for ungetch() */
+int bufp = 0;           /* next free position in buf */
+
+/* Flags */
+int fractional_flag = 0;
+int sign_flag = 0;
+
 /* reverse Polish calculator */
 int main(int argc, char * * argv)
 {
@@ -19,7 +35,7 @@ int main(int argc, char * * argv)
     while((type = getop(s)) != EOF) {
         switch (type) {
             case NUMBER:
-                push(atof(s));
+                (sign_flag) ? push(-1.0 * atof(s)) : push(atof(s));
                 break;
             case '+':
                 push(pop() + pop());
@@ -42,6 +58,22 @@ int main(int argc, char * * argv)
                     printf("error: zero divisor\n");
                 }
                 break;
+            case '%':
+                /* 
+                    '%' not commutative, hence need to enforce order
+                    '%' requires integer operands
+                */
+                op2 = pop();
+                if(op2 != 0.0 && !fractional_flag) {
+                    push((int)pop() % (int)op2);
+                }
+                else if (fractional_flag) {
+                    printf("error: modulus requires integer operands\n");
+                }
+                else {
+                    printf("error: zero divisor\n");
+                }
+                break;
             case '\n':
                 printf("\t%.8g\n", pop());
                 break;
@@ -49,14 +81,12 @@ int main(int argc, char * * argv)
                 printf("error: unknown command %s\n", s);
                 break;
         }
+        fractional_flag = 0;
+        sign_flag = 0;
     }
     return 0;
 }
 
-#define MAXVAL  100 /* maximum depth of val stack */
-
-int sp = 0;         /* next free stack position */
-double val[MAXVAL]; /* value stack */
 
 /* push: push f onto value pack */
 void push(double f)
@@ -89,25 +119,35 @@ int getop(char s[])
         ;
     s[1] = '\0';
     if(!isdigit(c) && c != '.') {
-        return c;       /* not a number */ 
+        /* handle possible sign character */ 
+        if(c == '-' || c == '+') {
+            int temp = getch();
+            if(isdigit(temp)) {
+                (c == '-') ? sign_flag = 1 : 0;
+                s[0] = c = temp;
+            }
+            else {
+                ungetch(temp);
+                return c;
+            }
+        }
+        else
+            return c;
     }
     i = 0;
     if(isdigit(c))      /* collect integer part */
         while(isdigit(s[++i] = c = getch()))
             ;
-    if(c == '.')        /* collect fractional part */
+    if(c == '.') {      /* collect fractional part */
+        fractional_flag = 1;
         while(isdigit(s[++i] = c = getch()))
             ;
+    }
     s[i] = '\0';
     if(c != EOF)
         ungetch(c);
     return NUMBER;
 }
-
-#define BUFSIZE     100 
-
-char buf[BUFSIZE];      /* buffer for ungetch() */
-int bufp = 0;           /* next free position in buf */
 
 int getch(void)         /* get a (possible pushed back) character */
 {
