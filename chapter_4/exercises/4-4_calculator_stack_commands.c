@@ -29,7 +29,6 @@ char buf[BUFSIZE];      /* buffer for ungetch() */
 int bufp = 0;           /* next free position in buf */
 
 /* Flags */
-int fractional_flag = 0;    /* indicates a fractional value entered as operand */
 int sign_flag = 0;          /* indicates a negative value was entered as operand */
 int command_flag = 0;       /* indicates that a text command was issued */
 
@@ -108,11 +107,8 @@ int main(int argc, char * * argv)
                     '%' requires integer operands
                 */
                 op2 = pop();
-                if(op2 != 0.0 && !fractional_flag) {
+                if(op2 != 0.0) {
                     push((int)pop() % (int)op2);
-                }
-                else if (fractional_flag) {
-                    printf("error: modulus requires integer operands\n");
                 }
                 else {
                     printf("error: zero divisor\n");
@@ -122,12 +118,18 @@ int main(int argc, char * * argv)
                 printf("\t%.8g\n", pop());
                 break;
             case TOP:
-                (sp) ? printf("\t%.8g\n", val[sp-1]) : printf("\t%.8g\n", val[sp]);
+                (sp) ? printf("\t%.8g\n", val[sp-1]) : printf("\t%s\n", "error: stack empty\0");
                 break;
             case SWP:
-                double temp = val[0];
-                val[0] = val[1];
-                val[1] = temp;
+                double temp;
+                if(sp > 1) {
+                    temp = val[sp-1];
+                    val[sp-1] = val[sp-2];
+                    val[sp-2] = temp;
+                }
+                else {
+                    printf("\t%s\n", "error: insufficient values on the stack\0");
+                }
                 break;
             case DUP:
                 (sp) ? push(val[sp-1]) : push(val[sp]);
@@ -142,7 +144,6 @@ int main(int argc, char * * argv)
                 printf("error: unknown command %s\n", s);
                 break;
         }
-        fractional_flag = 0;
         sign_flag = 0;
         command_flag = 0;
     }
@@ -226,7 +227,6 @@ int getop(char s[])
         while(isdigit(s[i++] = c = getch()))
             ;
     if(c == '.') {      /* collect fractional part */
-        fractional_flag = 1;
         while(isdigit(s[++i] = c = getch()))
             ;
     }
