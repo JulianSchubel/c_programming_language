@@ -1,4 +1,4 @@
-/* Add the modulus (%) operator and provisions for negative numbers */
+/* Add commands to print the top element of the stack without popping, to duplicate it, and to swap the top two elements. Add a command to clear the stack. */
 
 #include <stdio.h>
 #include <stdlib.h> /* for atof() */
@@ -246,4 +246,3 @@ void ungetch(int c)     /* push character back on input */
     else 
         buf[bufp++] = c;
 }
-
