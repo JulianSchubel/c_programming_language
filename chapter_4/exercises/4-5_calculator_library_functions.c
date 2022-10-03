@@ -234,7 +234,7 @@ int getop(char s[])
             case SQRT:
             case EXP:
             case POW:
-                /* push \n onto the shared buffer: causes the value to be popped off the stack by the '\n' case in maini() */
+                /* push \n onto the shared buffer: causes the value to be popped off the stack by the '\n' case in main() */
                 ungetch(c);
                 return signal;
                 break;
