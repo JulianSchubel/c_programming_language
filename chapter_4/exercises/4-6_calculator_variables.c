@@ -14,7 +14,7 @@
 #define MAXOP       100 /* max size of operand or operator */
 #define MAXVAL      100 /* maximum depth of val stack */
 #define BUFSIZE     100 /* shared buffer size */
-#define VARBUFSIZE  27  /* size of variable flag and value arrays */
+#define VARBUFSIZE  27  /* size of variable value array */
 
 int getop(char []);
 void push(double);
@@ -30,7 +30,6 @@ char buf[BUFSIZE];      /* buffer for ungetch() */
 int bufp = 0;           /* next free position in buf */
 
 double variable_values[VARBUFSIZE];     /* contains the value of a set variable */
-int var_flag = 0;
 int var_index;
 
 /* Flags */
