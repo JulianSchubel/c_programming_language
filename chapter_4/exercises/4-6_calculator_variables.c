@@ -49,7 +49,7 @@ enum signals {
     TAN,                /* calls the tan(double) library function on the top operand in the stack */
     ATAN,               /* calls the atan(double) library function on the top operand in the stack */
     SQRT,               /* calls the sqrt(double) library function on the top operand in the stack */
-    EXP,                /* calls the exp(double) library function (base-e exponention) on the top operand in the stack */
+    EXP,                /* calls the exp(double) library function (base-e exponentiation) on the top operand in the stack */
     POW,                /* calls the pow(double double) library function on the top to elements of the stack*/
     VAR,                /* indicates a variable has been encountered */
     RESULT,             /* pushes the most recently printed (popped) value onto the stack */
