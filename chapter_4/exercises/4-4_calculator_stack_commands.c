@@ -189,7 +189,6 @@ int getop(char s[])
                 break;
         }
     }
-    i = 0;
     /* check non digit or '.' characters */
     if(!isdigit(c) && c != '.') {
         /* handle possible sign character */ 
@@ -197,7 +196,7 @@ int getop(char s[])
             int temp = getch();
             if(isdigit(temp) || temp == '.') {
                 (c == '-') ? sign_flag = 1 : 0;
-                s[i] = c = temp;
+                s[0] = c = temp;
             }
             else {
                 ungetch(temp);
@@ -207,9 +206,10 @@ int getop(char s[])
         else
             return c;
     }
-    s[++i] = '\0';
+    s[1] = '\0';
+    i = 0;
     if(isdigit(c))      /* collect integer part */
-        while(isdigit(s[i++] = c = getch()))
+        while(isdigit(s[++i] = c = getch()))
             ;
     if(c == '.') {      /* collect fractional part */
         while(isdigit(s[++i] = c = getch()))
