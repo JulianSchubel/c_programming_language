@@ -188,8 +188,6 @@ int getop(char s[])
                 return INVALID_KEY;
                 break;
         }
-        /* stop '\n' case popping after a command entry */
-        (c == '\n') ? c = ' ' : c;
     }
     i = 0;
     /* check non digit or '.' characters */
