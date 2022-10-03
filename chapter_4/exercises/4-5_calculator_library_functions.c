@@ -22,26 +22,32 @@ int getch(void);
 void ungetch(int);
 int lookup(char * key);
 
-int sp = 0;         /* next free stack position */
-double val[MAXVAL]; /* value stack */
+int sp = 0;             /* next free stack position */
+double val[MAXVAL];     /* value stack */
 
 char buf[BUFSIZE];      /* buffer for ungetch() */
 int bufp = 0;           /* next free position in buf */
 
 /* Flags */
-int sign_flag = 0;          /* indicates a negative value was entered as operand */
-int command_flag = 0;       /* indicates that a text command was issued */
+int sign_flag = 0;      /* indicates a negative value was entered as operand */
+int text_input_flag = 0;/* indicates that a text command was issued */
 
 enum signals {
-    NUMBER = '0',   /* signal that a number was found */
-    TOP = 1,        /* print the top operand in the stack */
-    DUP,            /* duplicate the top operand in the stack */
-    SWP,            /* swap the top two elements of the stack */
-    CLR,            /* clear the stack */
-    SIN,            /* calls the sin(double x) library function on the top operand in the stack */
-    EXP,            /* calls the exp(double) library function (base-e exponention) on the top operand in the stack */
-    POW,            /* calls the pow(double double) library function on the top to elements of the stack*/
-    INVALID_KEY     /* Failed to find a key associated with a command */
+    NUMBER = '0',       /* signal that a number was found */
+    TOP = 100,          /* print the top operand in the stack */
+    DUP,                /* duplicate the top operand in the stack */
+    SWP,                /* swap the top two elements of the stack */
+    CLR,                /* clear the stack */
+    SIN,                /* calls the sin(double) library function on the top operand in the stack */
+    ASIN,               /* calls the asin(double) library function on the top operand in the stack */
+    COS,                /* calls the cos(double) library function on the top operand in the stack */
+    ACOS,               /* calls the acos(double) library function on the top operand in the stack */
+    TAN,                /* calls the tan(double) library function on the top operand in the stack */
+    ATAN,               /* calls the atan(double) library function on the top operand in the stack */
+    SQRT,               /* calls the sqrt(double) library function on the top operand in the stack */
+    EXP,                /* calls the exp(double) library function (base-e exponention) on the top operand in the stack */
+    POW,                /* calls the pow(double double) library function on the top to elements of the stack*/
+    INVALID_KEY         /* Failed to find a key associated with a command */
 };
 
 /* Structure to map strings to integer values */
@@ -57,6 +63,12 @@ symbol_t lookup_table[] = {
     {"swp", SWP},
     {"clr", CLR},
     {"sin", SIN},
+    {"asin", ASIN},
+    {"cos", COS},
+    {"acos", ACOS},
+    {"tan", TAN},
+    {"atan", ATAN},
+    {"sqrt", SQRT},
     {"exp", EXP},
     {"pow", POW}
 };
@@ -138,6 +150,24 @@ int main(int argc, char * * argv)
             case SIN:
                 push(sin(pop())); 
                 break;
+            case ASIN:
+                push(asin(pop()));
+                break;
+            case COS:
+                push(cos(pop()));
+                break;
+            case ACOS:
+                push(acos(pop()));
+                break;
+            case TAN:
+                push(tan(pop()));
+                break;
+            case ATAN:
+                push(atan(pop()));
+                break;
+            case SQRT:
+                push(sqrt(pop()));
+                break;
             case EXP:
                 push(exp(pop()));
                 break;
@@ -150,7 +180,7 @@ int main(int argc, char * * argv)
                 break;
         }
         sign_flag = 0;
-        command_flag = 0;
+        text_input_flag = 0;
     }
     return 0;
 }
@@ -186,35 +216,30 @@ int getop(char s[])
         ;
     /* read ASCII text for commands */
     while(c >= ASCII_LC_LB && c <= ASCII_LC_UB) {
-        (!command_flag) ? command_flag = 1 : command_flag;
+        (!text_input_flag) ? text_input_flag = 1 : text_input_flag;
         command[i++] = c;
         c = getch();
     }
+
     command[i] = '\0';
-    if(command_flag) {
-        switch (lookup(command)) {
-            case TOP:
-                return TOP;
-            case DUP:
-                return DUP;
-            case SWP:
-                return SWP;
-            case CLR:
-                return CLR;
+    if(text_input_flag) {
+        int signal = lookup(command);
+        switch (signal) {
             case SIN:
-                /* push \n onto the shared buffer */
-                ungetch(c);
-                return SIN;
+            case ASIN:
+            case COS:
+            case ACOS:
+            case TAN:
+            case ATAN:
+            case SQRT:
             case EXP:
-                /* push \n onto the shared buffer */
-                ungetch(c);
-                return EXP;
             case POW:
-                /* push \n onto the shared buffer */
+                /* push \n onto the shared buffer: causes the value to be popped off the stack by the '\n' case in maini() */
                 ungetch(c);
-                return POW;
+                return signal;
+                break;
             default:
-                return INVALID_KEY;
+                return signal;
                 break;
         }
     }
@@ -250,11 +275,13 @@ int getop(char s[])
     return NUMBER;
 }
 
+/* getch: retrieve a character from the shared buffer if one is present, else from stdin */
 int getch(void)         /* get a (possible pushed back) character */
 {
     return (bufp > 0) ? buf[--bufp] : getchar();
 }
 
+/* ungetch: place a character onto the shared buffer */
 void ungetch(int c)     /* push character back on input */
 {
     if(bufp >= BUFSIZE) 
