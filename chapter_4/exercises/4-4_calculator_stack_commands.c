@@ -109,8 +109,8 @@ int main(int argc, char * * argv)
                 (sp) ? printf("\t%.8g\n", val[sp-1]) : printf("\t%s\n", "error: stack empty\0");
                 break;
             case SWP:
-                double temp;
                 if(sp > 1) {
+                    double temp;
                     temp = val[sp-1];
                     val[sp-1] = val[sp-2];
                     val[sp-2] = temp;
