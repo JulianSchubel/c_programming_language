@@ -204,7 +204,6 @@ int getop(char s[])
         else
             return c;
     }
-    s[1] = '\0';
     i = 0;
     if(isdigit(c))      /* collect integer part */
         while(isdigit(s[++i] = c = getch()))
