@@ -9,7 +9,6 @@
 #define ASCII_LC_LB 97  /* ASCII lower case lower bound */
 #define ASCII_LC_UB 122  /* ASCII lower case upper bound */
 
-#define MAXCOMMAND  10  /* max length for a command */
 #define MAXOP       100 /* max size of operand or operator */
 #define MAXVAL      100 /* maximum depth of val stack */
 #define BUFSIZE     100 /* shared buffer size */
@@ -29,7 +28,7 @@ int bufp = 0;           /* next free position in buf */
 
 /* Flags */
 int sign_flag = 0;          /* indicates a negative value was entered as operand */
-int command_flag = 0;       /* indicates that a text command was issued */
+int text_input_flag = 0;       /* indicates that a text command was issued */
 
 enum signals {
     NUMBER = '0',   /* signal that a number was found */
@@ -133,7 +132,7 @@ int main(int argc, char * * argv)
                 break;
         }
         sign_flag = 0;
-        command_flag = 0;
+        text_input_flag = 0;
     }
     return 0;
 }
@@ -162,20 +161,19 @@ double pop(void)
 int getop(char s[])
 {
     int i, c;
-    char command[MAXCOMMAND];
     i = 0;
     /* discard white space */
     while((s[i] = c = getch()) == ' ' || c == '\t')
         ;
     /* read ASCII text for commands */
     while(c >= ASCII_LC_LB && c <= ASCII_LC_UB) {
-        (!command_flag) ? command_flag = 1 : command_flag;
-        command[i++] = c;
+        (!text_input_flag) ? text_input_flag = 1 : text_input_flag;
+        s[i++] = c;
         c = getch();
     }
-    command[i] = '\0';
-    if(command_flag) {
-        switch (lookup(command)) {
+    if(text_input_flag) {
+        s[i] = '\0';
+        switch (lookup(s)) {
             case TOP:
                 return TOP;
             case DUP:
