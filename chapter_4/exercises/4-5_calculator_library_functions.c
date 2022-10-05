@@ -10,7 +10,6 @@
 #define ASCII_LC_LB 97  /* ASCII lower case lower bound */
 #define ASCII_LC_UB 122  /* ASCII lower case upper bound */
 
-#define MAXCOMMAND  10  /* max length for a command */
 #define MAXOP       100 /* max size of operand or operator */
 #define MAXVAL      100 /* maximum depth of val stack */
 #define BUFSIZE     100 /* shared buffer size */
@@ -209,7 +208,6 @@ double pop(void)
 int getop(char s[])
 {
     int i, c;
-    char command[MAXCOMMAND];
     i = 0;
     /* discard white space */
     while((s[i] = c = getch()) == ' ' || c == '\t')
@@ -217,13 +215,13 @@ int getop(char s[])
     /* read ASCII text for commands */
     while(c >= ASCII_LC_LB && c <= ASCII_LC_UB) {
         (!text_input_flag) ? text_input_flag = 1 : text_input_flag;
-        command[i++] = c;
+        s[i++] = c;
         c = getch();
     }
 
-    command[i] = '\0';
     if(text_input_flag) {
-        int signal = lookup(command);
+        s[i] = '\0';
+        int signal = lookup(s);
         switch (signal) {
             case SIN:
             case ASIN:
@@ -260,7 +258,6 @@ int getop(char s[])
         else
             return c;
     }
-    s[1] = '\0';
     i = 0;
     if(isdigit(c))      /* collect integer part */
         while(isdigit(s[++i] = c = getch()))
