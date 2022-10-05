@@ -1,7 +1,7 @@
 /* Write a routine ungets(s) that will push back an entire string onto the input */
 
 #include <stdio.h>
-#include <stdlib.h> /* for atof() */
+#include <stdlib.h> /* for atof(), exit */
 #include <ctype.h>
 #include <string.h>
 #include <math.h>
@@ -53,6 +53,7 @@ enum signals {
     POW,                /* calls the pow(double double) library function on the top to elements of the stack*/
     VAR,                /* indicates a variable has been encountered */
     RESULT,             /* pushes the most recently printed (popped) value onto the stack */
+    QUIT,               /* terminate program */
     INVALID_KEY         /* Failed to find a key associated with a command */
 };
 
@@ -77,7 +78,8 @@ symbol_t lookup_table[] = {
     {"sqrt", SQRT},
     {"exp", EXP},
     {"pow", POW},
-    {"result", RESULT}
+    {"result", RESULT},
+    {"quit", QUIT}
 };
 
 #define LOOKUP_TABLE_SIZE   (sizeof(lookup_table) / sizeof(symbol_t))   /* Number of keys in the lookup table */
@@ -201,6 +203,8 @@ int main(int argc, char * * argv)
             case RESULT:
                 push(variable_values[VARBUFSIZE-1]);
                 break;
+            case QUIT:
+                exit(EXIT_SUCCESS);
             case INVALID_KEY:
             default:
                 printf("error: unknown command %s\n", s);
