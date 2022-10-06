@@ -1,4 +1,4 @@
-/* Add commands for handling variables. Add a variable for the most recently printed value. */
+/* Add commands for handling variables. Add a variable for the most recently printed value */
 
 #include <stdio.h>
 #include <stdlib.h> /* for atof() */
