@@ -1,4 +1,6 @@
-/* Write a routine ungets(s) that will push back an entire string onto the input */
+/* Write a routine ungets(s) that will push back an entire string onto the input.
+ * Q: Should ungets know about buf and bufp, or should it just use getch? 
+ * A: Ungets() should be built on top of ungetch() as this allows for a uniform interface to whatever the underlying buffer data structure is, enabling easier modification and troubleshooting. */
 
 #include <stdio.h>
 #include <stdlib.h> /* for atof(), exit */
@@ -322,13 +324,10 @@ void ungetch(int c)     /* push character back on input */
 /* ungets: push a string onto the shared buffer */
 void ungets(char * s)
 {
-    if((BUFSIZE - bufp) < strlen(s)) {
-        printf("ungets: too many characters\n");
-    }
-    else {
-        for(int i = 0; s[i]; ++i) {
-            buf[bufp++] = s[i];
-        }
+    unsigned long int s_len = strlen(s);
+    while(s_len > 0) {
+        /* must push last character onto the stack first to preserve order (FILO) */
+        ungetch(s[--i]);
     }
 }
 
