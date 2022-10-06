@@ -72,8 +72,6 @@ int main(int argc, char * * argv)
 {
     ungetch_old(EOF);
     int i, c;
-
-   /* c is char: cuases incorrect handling of EOF */
     while((c = getch_old()) != EOF) {
         putchar(c);
     }
