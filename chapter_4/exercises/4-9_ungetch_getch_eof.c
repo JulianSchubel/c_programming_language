@@ -6,7 +6,7 @@
         Solution: change the type of elements in the 'buf' array to signed integers.
 
     The former is debatable as to the degree of correctness/incorrectness.
-    The latter is more questionable and of greater certainty to be an error, as it contributes to the possibility of unexpected behaviour.
+    The latter is more questionable and of greater certainty to be an error as it contributes to the possibility of unexpected behaviour.
 */
 
 #include <stdio.h>
