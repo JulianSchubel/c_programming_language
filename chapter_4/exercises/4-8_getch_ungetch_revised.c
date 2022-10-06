@@ -4,8 +4,6 @@
 #include <stdlib.h> /* for atof(), exit */
 #include <string.h>
 
-#define BUFSIZE     100 /* shared buffer size */
-
 int getch(void);
 void ungetch(int);
 void ungets(char * s);
