@@ -21,6 +21,7 @@ double pop(void);
 int getch(void);
 void ungetch(int);
 int lookup(char * key);
+void help(void);
 
 int sp = 0;             /* next free stack position */
 double val[MAXVAL];     /* value stack */
@@ -52,7 +53,8 @@ enum signals {
     POW,                /* calls the pow(double double) library function on the top to elements of the stack*/
     VAR,                /* indicates a variable has been encountered */
     RESULT,             /* pushes the most recently printed (popped) value onto the stack */
-    INVALID_KEY         /* Failed to find a key associated with a command */
+    QUIT,               /* terminates the program */
+    INVALID_KEY         /* failed to find a key associated with a command */
 };
 
 /* Structure to map strings to integer values */
@@ -76,7 +78,8 @@ symbol_t lookup_table[] = {
     {"sqrt", SQRT},
     {"exp", EXP},
     {"pow", POW},
-    {"result", RESULT}
+    {"result", RESULT},
+    {"quit", QUIT}
 };
 
 #define LOOKUP_TABLE_SIZE   (sizeof(lookup_table) / sizeof(symbol_t))   /* Number of keys in the lookup table */
@@ -200,6 +203,10 @@ int main(int argc, char * * argv)
             case RESULT:
                 push(variable_values[VARBUFSIZE-1]);
                 break;
+            case QUIT:
+                exit(EXIT_SUCCESS);
+                break;
+            case INVALID_KEY:
             default:
                 printf("error: unknown command %s\n", s);
                 break;
