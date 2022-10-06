@@ -327,7 +327,7 @@ void ungets(char * s)
     unsigned long int s_len = strlen(s);
     while(s_len > 0) {
         /* must push last character onto the stack first to preserve order (FILO) */
-        ungetch(s[--i]);
+        ungetch(s[--s_len]);
     }
 }
 
