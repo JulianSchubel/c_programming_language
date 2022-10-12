@@ -24,12 +24,9 @@ void help(void);
 int sp = 0;             /* next free stack position */
 double val[MAXVAL];     /* value stack */
 
-char buf[BUFSIZE];      /* buffer for ungetch() */
-int bufp = 0;           /* next free position in buf */
-
-size_t input_size = 0;
-int input_index = 0;
-char * input;
+size_t input_size = 0;  /* input buffer size */
+int input_index = 0;    /* input buffer index */
+char * input;           /* input buffer */
 
 double variable_values[VARBUFSIZE];     /* contains the value of a set variable */
 int var_index;
@@ -268,7 +265,7 @@ int getop(char s[])
             case SQRT:
             case EXP:
             case POW:
-                /* push \n onto the shared buffer: causes the value to be popped off the stack by the '\n' case in main() */
+                /* decrement the index so the last read character (i.e the character that terminated the loop) can be read */
                 --input_index;
                 return signal;
                 break;
