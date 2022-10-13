@@ -1,4 +1,4 @@
-/* Add commands for handling variables. Add a variable for the most recently printed value */
+/* Modify getop so that it doesn't need to use ungetch. Hint: use an internal static variable. */
 
 #include <stdio.h>
 #include <stdlib.h> /* for atof() */
