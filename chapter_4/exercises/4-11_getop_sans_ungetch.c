@@ -241,7 +241,7 @@ double pop(void)
 int getop(char s[])
 {
     int i;
-    /* Internal static variable keeps track of last known value for c. Initialization value of ' ' selected as it will cause entry into the first loop and await user input */
+    /* Internal static variable keeps track of last known value for c. Initialization value of ' ' selected as it will cause entry into the first loop and await user input. */
     static int c = ' ';
     i = 0;
     /* discard white space */
