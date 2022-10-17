@@ -20,7 +20,7 @@ void reverse(char * string)
         --len;
         reverse(string);
     }
-    /* We assume a well formed string and len is last index not '\0', so the null terminator is left in place */
+    /* We assume a well formed string and len-1 is last indexed character  not '\0', so the null terminator is left in place */
 }
 
 int main(int argc, char * * argv)
