@@ -38,7 +38,7 @@ int getint(int *pn)
     if (c == '+' || c == '-') {
         /* holds next character */
         int temp;
-        /* check if '+' or '-' is being used a sign */ 
+        /* check if '+' or '-' is being used as a sign */ 
         if(!isdigit(temp = getch())) {
             ungetch(temp);
             ungetch(c);
