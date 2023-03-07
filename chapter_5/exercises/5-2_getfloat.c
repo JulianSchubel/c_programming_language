@@ -36,7 +36,7 @@ int getfloat(double *pn)
     double fractional_part = 0;
     int decimal_points = 0;
     while (isspace(c = getch())) /* skip white space */
-        ;
+       ;
     if (!isdigit(c) && c != EOF && c != '+' && c != '-' && c != '.') {
         ungetch(c); /* it's not a number */
         return 0;
