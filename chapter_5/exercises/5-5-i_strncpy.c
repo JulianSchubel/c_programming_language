@@ -21,7 +21,6 @@ void str_copy_n(char * s, char * t, unsigned int n) {
     /* determine extent of padding requirements */
     unsigned int pad_n = (n - t_len > 0) ? n - t_len : 0;
 
-    printf("Padding %d", pad_n);
     for(; n > pad_n; --n) {
         *s++ = *t++;
     }
