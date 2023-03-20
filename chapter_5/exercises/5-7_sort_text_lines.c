@@ -3,6 +3,44 @@
  * Cannot use a multidimensional array for 2 reasons: 
  *     1) cannot assign to an array, therefore the qsort implementation will not work, and the author almost certainly intended for this to be the case 
  *     2) this concept has not been covered at this point.
+ *
+ *
+ * Non scientific runtime execution checks (naive runs using perf stat):
+ * 
+        Performance counter stats for './a.out':
+
+              0.94 msec task-clock                #    0.000 CPUs utilized          
+                 4      context-switches          #    4.270 K/sec                  
+                 2      cpu-migrations            #    2.135 K/sec                  
+                61      page-faults               #   65.120 K/sec                  
+         1,116,862      cycles                    #    1.192 GHz                    
+         1,033,442      instructions              #    0.93  insn per cycle         
+           192,462      branches                  #  205.462 M/sec                  
+             6,598      branch-misses             #    3.43% of all branches        
+
+        10.750454805 seconds time elapsed 
+
+        0.001925000 seconds user        <--- THIS IS WHAT WE CARE ABOUT
+        0.000000000 seconds sys
+
+        -------------------------------------------------------------------
+
+        Performance counter stats for './a.out 2':
+
+              1.27 msec task-clock                #    0.000 CPUs utilized          
+                 4      context-switches          #    3.157 K/sec                  
+                 0      cpu-migrations            #    0.000 /sec                   
+                62      page-faults               #   48.932 K/sec                  
+         1,165,978      cycles                    #    0.920 GHz                    
+         1,060,403      instructions              #    0.91  insn per cycle         
+           197,421      branches                  #  155.810 M/sec                  
+             6,737      branch-misses             #    3.41% of all branches        
+
+       8.789955315 seconds time elapsed
+
+       0.002649000 seconds user         <--- THIS IS WHAT WE CARE ABOUT
+       0.000000000 seconds sys
+
  */
 
 #include <stdio.h>
@@ -24,16 +62,33 @@ char *alloc(int);
 void _qsort(char *v[], int left, int right);
 
 /* sort input lines */
-int main() {
+int main(int argc, char **argv) {
     int nlines; /* number of input lines read */
-
-    if ((nlines = readlines_stack_buffered(lineptr, MAXLINES, line_buffer)) >= 0) {
-        _qsort(lineptr, 0, nlines-1);
-        writelines(lineptr, nlines);
-        return 0;
+    
+    if (argc > 1 && atoi(argv[1]) == 2) {
+        int t1 = clock() / CLOCKS_PER_SEC;
+        if ((nlines = readlines_stack_buffered(lineptr, MAXLINES, line_buffer)) >= 0) {
+            _qsort(lineptr, 0, nlines-1);
+            writelines(lineptr, nlines);
+            int t2 = (clock() / CLOCKS_PER_SEC) - t1;
+            printf("TIMING: %d\n", t2);
+            return 0;
+        } else {
+            printf("error: input too big to sort\n");
+            return 1;
+        }
     } else {
-        printf("error: input too big to sort\n");
-        return 1;
+        int t1 = clock() / CLOCKS_PER_SEC;
+        if ((nlines = readlines(lineptr, MAXLINES)) >= 0) {
+            _qsort(lineptr, 0, nlines-1);
+            writelines(lineptr, nlines);
+            int t2 = (clock() / CLOCKS_PER_SEC) - t1;
+            printf("TIMING: %d\n", t2);
+            return 0;
+        } else {
+            printf("error: input too big to sort\n");
+            return 1;
+        }
     }
 }
 
