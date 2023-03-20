@@ -1,8 +1,8 @@
 /* Rewrite readlines to store lines in an array supplied by main rather than calling alloc (malloc) to maintain storage. How much faster is the program?
- * Ambiguity in intent with regards to the above question. Interpreting as follows: create an array on the stack instead of using the heap and have pointers to array offsets corresponding to the start of individual lines.
+ * Ambiguity with regards to the above question. Interpreting as follows: create an array on the stack instead of using the heap and have pointers to array offsets corresponding to the start of individual lines.
  * Cannot use a multidimensional array for 2 reasons: 
  *     1) cannot assign to an array, therefore the qsort implementation will not work, and the author almost certainly intended for this to be the case 
- *     2) this concept has not been covered at this pointers
+ *     2) this concept has not been covered at this point.
  */
 
 #include <stdio.h>
