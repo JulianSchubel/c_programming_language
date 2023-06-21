@@ -2,7 +2,7 @@
 /* Extend entab to accept the shorthand -m +n to mean tab stops every nth column, starting at column m. */
 
 /* interpretting -m to mean ignore tab stops before column m */
-/* interpretting +n to mean the a sequence of spaces of length n is to be replaced with a tab */
+/* interpretting +n to mean tab stops of width n */
 
 /*
     If space, read and count the number of spaces until non space.
