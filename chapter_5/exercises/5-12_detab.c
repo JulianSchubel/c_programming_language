@@ -15,8 +15,7 @@ int main(int argc, char * * argv)
 {
     int c;
     unsigned int min_columns = 0;
-    unsigned int column_frequency = 0;
-    unsigned int min_column_flag = 0, column_frequency_flag = 0, invalid_argument = 0;
+    unsigned int min_column_flag = 0, invalid_argument = 0;
     unsigned int tabstop = DEFAULT_TAB_STOP;
     while(--argc > 0) {
         c = (*++argv)[0];
@@ -42,6 +41,7 @@ int main(int argc, char * * argv)
                     break;
                 default:
                     argc = 0;
+                    invalid_argument = 1;
                     break;
             }
         }
@@ -51,8 +51,6 @@ int main(int argc, char * * argv)
         printf("Usage: detab [-m, -n]\n");
         exit(EXIT_FAILURE);
     }
-
-    printf("%d, %d\n", min_columns, column_frequency);
 
     int position = 0;
     unsigned int column = 1;
