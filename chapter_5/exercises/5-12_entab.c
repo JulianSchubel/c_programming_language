@@ -73,7 +73,8 @@ int main(int argc, char * * argv)
             c = getchar();
         }
         if(c == '\t') {
-            columns += tabstop;
+            /* Assuming a set system tabstop equivalent in width to 8 spaces */
+            columns += 8;
         }
         if(!post_m_columns && columns >= min_columns) {
             tabstop = tabstop_post_m;
