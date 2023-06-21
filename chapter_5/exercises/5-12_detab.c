@@ -1,7 +1,7 @@
 /* Write a program detab that replaces tabs in the input with the proper number of blanks to space to the next tab stop. Assume a fixed set of tab stops, say every n columns. */
 /* Extend detab to accept the shorthand -m +n to mean tab stops every nth column, starting at column m. */
 
-/* interpretting -m to mean ignore tab stops before column m */
+/* interpretting -m to mean use the default tab stops until column m */
 /* interpretting +n to mean tab stops of width n */
 
 #include <stdio.h>
