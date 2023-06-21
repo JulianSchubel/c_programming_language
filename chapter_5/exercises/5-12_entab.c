@@ -14,7 +14,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define DEFAULT_TAB_STOP 4
+#define DEFAULT_TAB_STOP 8
 #define MAXLINE 10
 
 int getln(char s[], int lim);
