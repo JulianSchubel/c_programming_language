@@ -3,6 +3,7 @@
 
 /* interpretting -m to mean ignore tab stops before column m */
 /* interpretting +n to mean tabs of width n */
+
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -63,7 +64,7 @@ int main(int argc, char * * argv)
             int tab_stop_offset = position % tabstop;
             int tab_stop_distance = tabstop - tab_stop_offset; 
             for(int i = 0; i < tab_stop_distance; ++i) {
-                putchar('s');
+                putchar(' ');
             }
             position = 0;
         }
