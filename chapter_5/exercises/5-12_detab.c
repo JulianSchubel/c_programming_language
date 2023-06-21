@@ -2,7 +2,7 @@
 /* Extend detab to accept the shorthand -m +n to mean tab stops every nth column, starting at column m. */
 
 /* interpretting -m to mean ignore tab stops before column m */
-/* interpretting +n to mean tabs of width n */
+/* interpretting +n to mean tab stops of width n */
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -18,6 +18,7 @@ int main(int argc, char * * argv)
     unsigned int min_columns = 0;
     unsigned int min_column_flag = 0, invalid_argument = 0;
     unsigned int tabstop = DEFAULT_TAB_STOP;
+    unsigned int tabstop_post_m = 0;
     while(--argc > 0) {
         c = (*++argv)[0];
         if(c == '-') {
@@ -38,7 +39,7 @@ int main(int argc, char * * argv)
             switch (c) {
                 case 'n':
                     --argc;
-                    tabstop = atoi(*++argv);
+                    tabstop_post_m = atoi(*++argv);
                     break;
                 default:
                     argc = 0;
@@ -54,27 +55,33 @@ int main(int argc, char * * argv)
     }
 
     int position = 0;
-    unsigned int column = 1;
+    unsigned int columns = 1;
+    unsigned int post_m_columns = 0;
     while((c = getchar()) != '\0' && c != EOF) {
-        if(min_column_flag && column < min_columns) {
-            ++column;
-            putchar(c);
+        if(!post_m_columns && columns >= min_columns) {
+            tabstop = tabstop_post_m;
+            post_m_columns = 1;
         }
-        else if(c == '\t') { 
+        if(c == '\t') { 
             int tab_stop_offset = position % tabstop;
             int tab_stop_distance = tabstop - tab_stop_offset; 
             for(int i = 0; i < tab_stop_distance; ++i) {
+                if(!post_m_columns && columns >= min_columns) {
+                    tabstop = tabstop_post_m;
+                    post_m_columns = 1;
+                }
                 putchar(' ');
+                ++columns;
             }
             position = 0;
         }
         else if( c == '\n') {
             putchar(c);
             position = 0;
-            column = 0;
+            columns = 0;
         }
         else {
-            ++column;
+            ++columns;
             ++position;
             putchar(c);
         }
