@@ -7,7 +7,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define DEFAULT_TAB_STOP 4
+#define DEFAULT_TAB_STOP 8
 
 char * detab(char * s, int lim, int tab_width);
 int getln(char s[], int lim);
