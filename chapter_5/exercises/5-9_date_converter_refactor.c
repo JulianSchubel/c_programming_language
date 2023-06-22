@@ -19,7 +19,8 @@ int day_of_year(int year, int month, int day) {
     leap = (year % 4 == 0 && year % 100 != 0) || year % 400 == 0;
     
     /* p points to the first  */
-    char * p = &daytab[leap][1];
+    // char * p = &daytab[leap][1];
+    char * p = (*(daytab + leap)) + 1;
 
     for (i = 1; i < month; i++) {
         //day += *(*(daytab + leap) + i);
@@ -36,7 +37,8 @@ void month_day(int year, int yearday, int *pmonth, int *pday) {
 
     leap = year % 4 == 0 && year % 100 != 0 || year % 400 == 0;
 
-    char * p = &daytab[leap][1];
+    // char * p = &daytab[leap][1];
+    char * p = (*(daytab + leap)) + 1;
 
     for ( i = 1; yearday > *p; i++) {
         //yearday -= *(*(daytab + leap) + i);
