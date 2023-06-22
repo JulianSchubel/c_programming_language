@@ -16,7 +16,7 @@ int _getline(char *output_buffer, unsigned int limit);
 
 int _getline(char *output_buffer, unsigned int limit) {
     int c, i;
-    for( i = 0; i < limit - 1 && (c = getchar()) != EOF && c != '\n'; ++i) {
+    for( i = 0; (unsigned int) i < limit - 1 && (c = getchar()) != EOF && c != '\n'; ++i) {
         output_buffer[i] = c;
     }
     if( c == '\n' ) {
