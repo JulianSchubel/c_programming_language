@@ -219,7 +219,7 @@ void afree(char *p) {
     }
 }
 
-/* case_insensitive_lexicographic_cmp: return < 0 if s < t; 0 if s == t, > 0 if s > t. Treats s and t as lower case. */
+/* case_insensitive_lexicographic_cmp: Compares s and t in a case insensitive (converts to lower case), lexicographic manner. Returns < 0 if s < t; > 0 if s > t. Else 0 (s == t). */
 int case_insensitive_lexicographic_cmp(char *s, char *t) {
     while(*s != '\0' && (tolower(*s) == tolower(*t))) {
         ++s;
