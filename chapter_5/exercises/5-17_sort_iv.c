@@ -1,4 +1,4 @@
-/* Add the -d ("directory order") option, which makes comparisons onlu on letters, numbers and blanks. Make sure it works in conjunction with -f */
+/* Add a field-handling capability, so sorting may be done on fields within lines, each field sorted according to an independent set of options. */
 #include <ctype.h>
 #include <inttypes.h>
 #include <stdio.h>
