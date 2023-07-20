@@ -281,7 +281,7 @@ void afree(char *p) {
     }
 }
 
-/* lexicographic_comparison: Compares s and t in a case insensitive (converts to lower case), lexicographic manner. Returns < 0 if s < t; > 0 if s > t. Else 0 (s == t). */
+/* lexicographic_comparison: Compares s and t in a lexicographic manner. Returns < 0 if s < t; > 0 if s > t. Else 0 (s == t). */
 int lexicographic_comparison(char *s, char *t) {
     extern int order;
     extern char sort_options;
