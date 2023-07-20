@@ -1,16 +1,13 @@
-/* Add a field-handling capability, so sorting may be done on fields within lines, each field sorted according to an independent set of options */
-
-/* fields are defined as whitespace delimited strings */
-
+/* Add the -d ("directory order") option, which makes comparisons onlu on letters, numbers and blanks. Make sure it works in conjunction with -f */
 #include <ctype.h>
+#include <inttypes.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-#define MAXLINES 5000       /* max #lines to be sorted */
-#define MAXLEN 1000 /* max length of any input line */
-#define ALLOCSIZE 10000 /* size of available space */
-#define FIELD_SIZE 1000 /* max field size */
+#define MAXLINES 5000       // max #lines to be sorted
+#define MAXLEN 1000         // max length of any input line
+#define ALLOCSIZE 10000     // size of available space 
 
 /* option flags */
 #define NUMERIC 1           // 0000 0001
@@ -19,133 +16,121 @@
 #define DIRECTORY_ORDER 8   // 0000 1000
 #define FIELD 16            // 0001 0000
 
-static char allocbuf[ALLOCSIZE]; /* storage for alloc */
-static char * allocp = allocbuf; /* next free position */
-char *lineptr[MAXLINES];    /* pointers to text lines */
-char *alloc(int);
-static char field_buffer_a[FIELD_SIZE];
-static char field_buffer_b[FIELD_SIZE];
+#define CAST_VOID_COMPARE (int (*)(void *, void*))
 
-/* usage: output a usage message and exit the program with a failure signal */
-void usage();
-/* set_options: sets options flags based on the argument string provided */
-void set_options(char **args);
-/* readlines: read input lines) */
-int readlines( char *lineptr[], int nlines);
-/* writelines: write output lines */
-void writelines(char *lineptr[], int nlines);
-/* getline: get line into s, return length */
+/* function prototypes */
+int (*compare) (void* string_a, void* string_b);
+char *alloc(int);
 int _getline(char *, int);
-/* _qsort: sort v[left]...v[right] into inreasing order */
+int readlines( char *lineptr[], int nlines);
+void writelines(char *lineptr[], int nlines);
+void swap(void *v[], int, int);
 void _qsort(void *lineptr[], int left, int right, int (*comp) (void *, void *)); 
-/* swap: swap v[i] and v[j] */
-void swap(void *v[], int i, int j);
-/* substr: puts a substring of s from field_start up to but not including field_end into string */
-void substr(char *s, char *str, unsigned int field_start, unsigned int field_end);
-/* numcmp: compare s1 and s2 numerically */
-int numcmp(char *, char *);
-/* alloc: return pointer to n characters */
-char * alloc(int n);
-/* afree: free storage pointed to by p */
-void afree(char *p);
-/* lexicographic_cmp: Compares s and t in a case insensitive (converts to lower case), lexicographic manner. Returns < 0 if s < t; > 0 if s > t. Else 0 (s == t). */
-int lexicographic_cmp(char *, char *);
+int numeric_comparison(char *, char *);
+int lexicographic_comparison(char *, char *);
+static void parse_arguments(int, char**);
+void deallocate();
+void print_byte(char options);
 /* read_field: reads field field_number from line, putting it in s. */
 void read_field(char *s, char *str, unsigned int field_number);
+int field_comparison(char *, char *);
 
-/* used to flip comparision */
-int order = 1;
-/* field number to sort by */
-static int field = 0;
-/* store option flags */
-static char options = 0;
+/* extern variables  */
+static char allocbuf[ALLOCSIZE];            // storage for alloc
+static char * allocp = allocbuf;            // next free position
+char *lineptr[MAXLINES];                    // pointers to text lines
+int order = 1;                              // used to flip comparison in the case that DECREASING ('r') is set
+static char sort_options = 0;               // array of sorting options
+static unsigned int *field_indices = 0;     // array of field indexes
+static char *field_sort_options = 0;        // sort options for fields
+static unsigned int n_field_options = 0;    // number of field sort options
+static char current_options = 0;            // the current set of sort options being used
 
 /* sort input lines */
 int main(int argc, char *argv[])
 {
-    extern unsigned int max_args_count;
-    int nlines;                 /* number of input lines read */
-    extern int order;           /* 1 if reverse (descending) sort */
+    int nlines;                         // number of input lines read
+    extern int order;                   
+    extern char sort_options;          
+    extern char* field_sort_options;
+    extern unsigned int n_field_options;
+    extern unsigned int *field_indices; 
+    extern char current_options;
 
-    if( argc > 1 ) {
-        ++argv;
-    }
+    field_sort_options = (char *) malloc(sizeof(char) * (argc-1));
+    field_indices = (unsigned int *) malloc(sizeof(unsigned int) * (argc-1));
+    parse_arguments(argc, argv);
 
-    nlines = readlines(lineptr, MAXLINES);
-    if(nlines >= 0) {
-        while( --argc > 0 ) {
-            /* reset options from last run */
-            options = 0;
-            set_options(argv);
-            ++argv;
-            _qsort( (void **) lineptr, 0, nlines-1, (int (*) (void*, void*)) ((options & NUMERIC) ? numcmp : lexicographic_cmp));
-            writelines(lineptr, nlines);
+    if( (nlines = readlines(lineptr, MAXLINES)) >= 0 ) {
+        if(n_field_options > 0) {
+            printf("number of field options: %d\n", n_field_options);
+            compare = CAST_VOID_COMPARE field_comparison;
+            _qsort( (void **) lineptr, 0, nlines-1, compare);
         }
+        else {
+            compare = (int (*) (void*, void*)) ((sort_options & NUMERIC) ? (int (*) (char*, char*)) numeric_comparison : lexicographic_comparison);
+            _qsort( (void **) lineptr, 0, nlines-1, compare);
+        }
+        writelines(lineptr, nlines);
+        return 0;
     }
     else {
         printf("input too big to sort\n");
-        return EXIT_FAILURE;
+        return 1;
     }
+    deallocate();
     return EXIT_SUCCESS;
 }
 
-/* usage: output a usage message and exit the program with a failure signal */
-void usage() {
-    printf("sort [-MN]* where M is the field to sort by and within the range 0-99, and N a selection of the options d,f,n,r \n");
-    exit(EXIT_FAILURE);
-}
-
-/* set_options: sets options flags based on the argument string provided */
-void set_options(char **args) {
-    extern char options;
-    extern int order;
-    extern int field;
-    /* flag indicating whether the field number has been read */
-    char field_read = 0;
-    char field_counter = 0;
-    int c = *args[0];
-    if (c == '-') {
-        /* iterate over every character in the option argument string */
-        while( (c = *++args[0]) ) {
-            if( isdigit(c) && !field_read ) {
-                options |= FIELD;
-                /* accumalate the field number from the first set of contigous digits encountered */
-                field = 10*field + (c - 48);
-            }
-            else {
-                field_read = 1;
+/* parse_arguments: parse input arguments for processing */
+static void parse_arguments(int argc, char **argv) {
+    int c;
+    extern unsigned int *field_indices;
+    char options = 0;
+    extern unsigned int n_field_options; 
+    extern char sort_options;
+    extern char* field_sort_options;
+    char is_field_option = 0;
+    while(--argc > 0 && (c = (*++argv)[0])) {
+        printf("%p\n", *argv);
+        if(c == '-') {
+            options = 0;
+            while(c = *++argv[0]) {
+                if(isdigit(c) && !is_field_option) {
+                    is_field_option = 1;
+                    field_indices[n_field_options] = 10 * field_indices[n_field_options] + (c - '0');
+                    /* read sequnce of digits as a field value in decimal */ 
+                    while((c = *++argv[0]) && isdigit(c)) {
+                        field_indices[n_field_options] = 10 * field_indices[n_field_options] + (c - '0');
+                    }
+                    ++n_field_options;
+                }
                 switch (c) {
+                    case 'd':
+                        options |= DIRECTORY_ORDER;
+                        break;
+                    case 'f':
+                        options |= FOLD;
+                        break;
                     case 'n':
                         options |= NUMERIC;
                         break;
                     case 'r':
                         options |= DECREASING;
-                        order = -1;
-                        break;
-                    case 'f':
-                        options |= FOLD;
-                        break;
-                    case 'd':
-                        options |= DIRECTORY_ORDER;
                         break;
                     default:
-                        printf("invalid argument option\n");
-                        usage();
                         break;
                 }
             }
         }
+        if(is_field_option) {
+            is_field_option = 0;
+            field_sort_options[n_field_options-1] = options;
+        }
+        else {
+            sort_options = options;
+        }
     }
-    /*
-    printf("numeric: %d\ndecreasing: %d\nfold: %d\ndirectory_order: %d\nfield: %d\nfield_number: %d\n",
-            (options & NUMERIC) / NUMERIC,
-            (options & DECREASING) / DECREASING,
-            (options & FOLD) / FOLD,
-            (options & DIRECTORY_ORDER) / DIRECTORY_ORDER,
-            (options & FIELD) / FIELD,
-            field
-    );
-    */
 }
 
 /* readlines: read input lines) */
@@ -200,8 +185,8 @@ void _qsort(void *v[], int left, int right, int (*comp)(void*, void*)) {
     swap(v, left, (left + right) / 2);
     last = left;
     for( i = left+1; i <= right; ++i ) {
-        /* flip the result in the case that the DESCENDING option is set */
-        if( order * (*comp)(v[i], v[left]) < 0 ) {
+        /* easiest to handle mathematically by multiplying by order (1 or -1) to flip the result in the case that the DESCENDING option is set */
+        if(order * (*comp)(v[i], v[left]) < 0 ) {
             swap(v, ++last, i);
         }
     }
@@ -219,36 +204,11 @@ void swap(void *v[], int i, int j)
     v[j] = temp;
 }
 
-/* substr: puts a substring of s from field_start up to but not including field_end into string */
-void substr(char *s, char *str, unsigned int field_start, unsigned int field_end) {
-    unsigned int field_length = field_end - field_start;
-    unsigned int string_length = strlen(s);
-    /* check bounds for field_length */
-    if( field_length <= 0 || field_length > string_length ) {
-        usage();
-    }
-    else {
-        string_length = field_length;
-    }
-    for(unsigned int i = 0, j = field_start; j < field_end; ++i, ++j) {
-        str[i] = s[j];
-    }
-}
-
-/* numcmp: compare s1 and s2 numerically */
-int numcmp(char *s1, char *s2) {
+/* numeric_comparison: compare s1 and s2 numerically */
+int numeric_comparison(char *s1, char *s2) {
+    extern char sort_options;
     double v1, v2;
     extern int order;
-    extern int field;
-    char field_comparison = (options & FIELD) ? 1 : 0;
-    
-    if(field_comparison) {
-        read_field(field_buffer_a, s1, field);
-        read_field(field_buffer_b, s2, field);
-    }
-
-    s1 = field_buffer_a;
-    s2 = field_buffer_b;
 
     v1 = atof(s1);
     v2 = atof(s2);
@@ -261,11 +221,11 @@ int numcmp(char *s1, char *s2) {
         int c;
         while( (c = s1[i]) ) {
             /* if the fold option has been provided convert to lower case */
-            if( options & FOLD ) {
+            if( sort_options & FOLD ) {
                 c = tolower(c);
             }
             /* if -d flag set and the character is not either alphanumeric or a blank skip the character */
-            if( (options & DIRECTORY_ORDER) && !(isalnum(c) || isblank(c)) ) {
+            if( (sort_options & DIRECTORY_ORDER) && !(isalnum(c) || isblank(c)) ) {
                 continue;
             }
             sum += (double) c;
@@ -276,11 +236,11 @@ int numcmp(char *s1, char *s2) {
         i = 0;
         while( (c = s2[i]) ) {
             /* if the fold option has been provided convert to lower case */
-            if( options & FOLD ) {
+            if( sort_options & FOLD ) {
                 c = tolower(c);
             }
             /* if -d flag set and the character is not either alphanumeric or a blank skip the character */
-            if( (options & DIRECTORY_ORDER) && !(isalnum(c) || isblank(c)) ) {
+            if( (sort_options & DIRECTORY_ORDER) && !(isalnum(c) || isblank(c)) ) {
                 continue;
             }
             sum += (double) c;
@@ -321,23 +281,13 @@ void afree(char *p) {
     }
 }
 
-/* lexicographic_cmp: Compares s and t in a case insensitive (converts to lower case), lexicographic manner. Returns < 0 if s < t; > 0 if s > t. Else 0 (s == t). */
-int lexicographic_cmp(char *s, char *t) {
-    extern int field;
-    char field_comparison = (options & FIELD) ? 1 : 0;
-
-    if(field_comparison) {
-        read_field(field_buffer_a, s, field);
-        read_field(field_buffer_b, t, field);
-    }
-
-    s = field_buffer_a;
-    t = field_buffer_b;
-
-    int fold = options & FOLD;
-    int directory_order = options & DIRECTORY_ORDER;
-    char a = 0, b = 0;
-
+/* lexicographic_comparison: Compares s and t in a case insensitive (converts to lower case), lexicographic manner. Returns < 0 if s < t; > 0 if s > t. Else 0 (s == t). */
+int lexicographic_comparison(char *s, char *t) {
+    extern int order;
+    extern char sort_options;
+    int fold = sort_options & FOLD;
+    int directory_order = sort_options & DIRECTORY_ORDER;
+    volatile int a = 0, b = 0;
     while ( a == b ) {
         /* if the DIRECTORY_ORDER option is set only compare alphanumeric and blank characters */
         if( directory_order ) {
@@ -352,17 +302,16 @@ int lexicographic_cmp(char *s, char *t) {
             }
         }
 
-        /* assign character to a and b. If FOLD option set, convert the character to lowercase for comparison */
+        /* if FOLD option set convert the character to lowercase for comparison */
         a = fold ? tolower(*s++) : *s++;
         b = fold ? tolower(*t++) : *t++;
-
 
         /* in the case that a == b but a and b are '\0', need to break out of the loop */
         if (a == '\0' && b == '\0') {
             return 0;
         }
     }
-    return a - b;
+    return (a - b);
 }
 
 /* read_field: reads field field_number from line, putting it in s.
@@ -372,19 +321,56 @@ void read_field(char *s, char *line, unsigned int field_number) {
     int c;
     int i = 0;
     int j = 0;
-    while( (c = line[i++]) != '\0' && fields_read <= field_number ) {
+    char *field_index = 0;
+    while( (c = line[i++]) != '\0' && fields_read + 1 <= field_number ) {
         if( c == '\t' || c == ' ' ) {
             ++fields_read;
-            if( fields_read <= field_number ) {
+            if( fields_read + 1 <= field_number ) {
                 continue;
             }
             else {
                 break;
             }
         }
-        else if (fields_read == field_number ) {
+        else if (fields_read + 1 == field_number ) {
             s[j++] = c;
         }
     }
     s[j] = '\0';
+}
+
+int field_comparison(char *s, char *t) {
+    extern unsigned int n_field_options;
+    printf("%d\n", n_field_options);
+    extern unsigned int *field_indices;
+    extern char *field_sort_options;
+    extern char sort_options;
+    unsigned long int s_len = strlen(s);
+    unsigned long int t_len = strlen(t);
+    char *field_a = (char *) malloc(sizeof(char) * s_len);
+    char *field_b = (char *) malloc(sizeof(char) * t_len);
+    int comparison = 0;
+    for(unsigned int i = 0; i < n_field_options && comparison == 0; ++i) {
+        sort_options = field_sort_options[i];
+        read_field(field_a, s, field_indices[i]);
+        read_field(field_b, t, field_indices[i]);
+        if (sort_options & NUMERIC) {
+            comparison = numeric_comparison(field_a, field_b);
+            compare = CAST_VOID_COMPARE numeric_comparison;
+        } else {
+            comparison = lexicographic_comparison(field_a, field_b);
+            compare = CAST_VOID_COMPARE lexicographic_comparison;
+        }
+        printf("field_a: %s\nfield_b: %s\ncomparison: %d\n", field_a, field_b, comparison);
+    }
+    free(field_a);
+    free(field_b);
+    return comparison;
+}
+
+void deallocate() {
+    extern char *field_sort_options;
+    extern unsigned int *field_indices;
+    free(field_sort_options);
+    free(field_indices);
 }
