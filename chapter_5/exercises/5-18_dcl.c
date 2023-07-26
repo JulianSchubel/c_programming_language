@@ -2,15 +2,21 @@
 
 /* Interpretting recovery from input errors to be a more standard response to invalid input. 
  * At current program outputs multiple error messages but continues processing. 
- * Changing behaviour to output either the declaration or single error response. */
+ * Changing behaviour to output either the declaration or single error response. 
+ * In the case of expected dcl errors, outputing the dcl and direct dcl definition below */
 
-/* dcl: option *'s direct-dcl
- direct-dcl:  name
-              (dcl) 
-              direct-dcl()
-              direct-dcl[optional size]
+/* dcl and direct-dcl definition 
+ *
+ * dcl: 
+ *      optional *'s direct-dcl
+ * direct-dcl:  
+ *      name
+ *      (dcl)  
+ *      direct-dcl() 
+ *      direct-dcl[optional size]
+*/
 
- parse tree of (*pfa[])():
+ /* example parse tree of (*pfa[])():
 
             dcl
              |
@@ -34,7 +40,7 @@
 
 #define MAXTOKEN 100
 #define BUFSIZE 100 
-#define ERROR_MESSAGE_SIZE 50
+#define ERROR_MESSAGE_SIZE 128
 #define MAX_ERROR_MESSAGES 8
 #define PARENTHESIS_ERROR 1             /* 0000 0001 */
 #define BRACKET_ERROR 2                 /* 0000 0010 */
@@ -116,7 +122,7 @@ void dirdcl(void)
         strcpy(name, token);
     }
     else {
-        strncpy(error_message_table[number_of_error_messages],"error: expected name or (dcl)\n", ERROR_MESSAGE_SIZE);
+        strncpy(error_message_table[number_of_error_messages],"error: expected name or (dcl)\ndcl:\n\toptional *'s direct-dcl\ndirect-dcl:\n\tname\n\t(dcl)\n\tdirect-dcl()\n\tdirect-dcl[optional size]\n", ERROR_MESSAGE_SIZE);
         number_of_error_messages++;
     }
     while( (type = gettoken()) == PARENS || type == BRACKETS ) {
