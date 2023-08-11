@@ -2,7 +2,7 @@
 
 /* necessary parenthesis are for function pointers and functions returning pointers to arrays 
  * in the abbreviated input syntax this occurs when * () or * [] is given
- * therefore we can scan for PARENS or BRACKETS tokens on encountering a '*' token */
+ * therefore we can scan for a '(' ot '[' symbol on encountering a '*' token */
 
 #include <stdio.h>
 #include <stdlib.h>
