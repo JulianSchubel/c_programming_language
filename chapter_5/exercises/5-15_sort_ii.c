@@ -126,7 +126,7 @@ void _qsort(void *v[], int left, int right, int (*comp)(void*, void*)) {
     last = left;
     for( i = left+1; i <= right; ++i ) {
         /* easiest to handle mathematically by multiplying by order (1 or -1) to flip the result */
-        if( order * (*comp)(v[i], v[left]) < 0 ) {
+        if( order * comp(v[i], v[left]) < 0 ) {
             swap(v, ++last, i);
         }
     }

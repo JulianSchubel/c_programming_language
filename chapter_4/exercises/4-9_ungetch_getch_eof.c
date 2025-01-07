@@ -11,18 +11,8 @@
 
 #include <stdio.h>
 #include <stdlib.h> /* for atof() */
-#include <ctype.h>
-#include <string.h>
-#include <math.h>
 
-/* ASCII charset bounds */
-#define ASCII_LC_LB 97  /* ASCII lower case lower bound */
-#define ASCII_LC_UB 122  /* ASCII lower case upper bound */
-
-#define MAXOP       100 /* max size of operand or operator */
-#define MAXVAL      100 /* maximum depth of val stack */
 #define BUFSIZE     100 /* shared buffer size */
-#define VARBUFSIZE  27  /* size of variable value array */
 
 int getch(void);
 void ungetch(int);

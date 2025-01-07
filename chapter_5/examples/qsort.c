@@ -22,7 +22,6 @@ void qsort(char *v[], int left, int right)
     qsort(v, last+1, right);
 }
 
-/* interchange *px and *py */
 void swap(char *v[], int i, int j)
 {
     char *temp;

@@ -15,6 +15,7 @@ int main(int argc, char *argv[])
     }
     else {
         while( _getline(line, MAXLINE) > 0 ) {
+            /* strstr(s,t) returns a pointer to the first occurence of the string t in the string s or NULL if there is none */
             if( strstr(line, argv[1]) != NULL ) {
                 printf("%s", line);
                 found++;

@@ -24,7 +24,7 @@ int tokentype;              /* type of last token */
 char token[MAXTOKEN];       /* last token string */
 char name[MAXTOKEN];        /* identifier name */
 char datatype[MAXTOKEN];    /* data type = char, int, etc. */
-char out[1000];             /* output string */
+char out[BUFSIZE];             /* output string */
 char buf[BUFSIZE];          /* buffer for ungetch() */
 int bufp = 0;               /* next free position in buf */
 
@@ -36,7 +36,7 @@ int main(int argc, char **argv) {
 void undcl(void) 
 {
     int type;
-    char temp[MAXTOKEN];
+    char temp[MAXTOKEN * 2 + 100];
 
     /* get the first token and place it into token array */
     while( gettoken() != EOF ) {
